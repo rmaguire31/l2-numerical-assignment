@@ -77,9 +77,6 @@ u(2:n,1) = f(x(2:n));
 u([1 end], :) = 0;
 
 % Apply stencil
-% for j = 1:m
-%     u(2:n,j+1) = S * u(2:n,j);
-% end
 v = real(S * repmat(u(2:n,1), m, 1));
 u(2:n,2:end) = reshape(v, n-1, []);
 end
