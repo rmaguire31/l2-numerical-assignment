@@ -16,7 +16,7 @@ function [x,t,u] = conv_diff_eig(a,b,n,T,m,c,v,d,f)
 %   Which reduces to the problem to the following stencil:
 %                  [ d*k + 1 ] [0  1  0][u(i-1,j)]
 %       u(i,j+1) = [  v*k/h  ].[0 -1  1][ u(i,j) ]
-%                  [c^2*k/h^2] [1 -2  1][u(i+1,1)]
+%                  [c^2*k/h^2] [1 -2  1][u(i+1,j)]
 %
 %   The stencil is used to produce a tridiagonal matrix for finding the
 %   solution u(x,j+1) from u(x,j) at time j, starting from u(x,0) which is
