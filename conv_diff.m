@@ -5,8 +5,8 @@ function [x,t,u] = conv_diff(a,b,n,T,m,c,v,d,f)
 %   Computes the particular solution for a convection-diffusion-reaction
 %   problem in 1D with a linear reaction component:
 %       u_t(x,t) = c^2*u_xx(x,t) + v*u_x(x,t) + d*u(x,t) in [a,b]x[0,T]
-%       u(a,t) = u(b,t) = 0 (Boundary Conditions)
-%       u(x,0) = f(x) (Initial Condition)
+%       BC: u(a,t) = u(b,t) = 0
+%       IC: u(x,0) = f(x)
 %
 %   This problem is approximated using the following formulae:
 %       u_t(x,t) ~ DF_k u(x,t)|x = (u(x,t+k) - u(x,t))/k
