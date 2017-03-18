@@ -24,7 +24,7 @@ function y = taylor4(f, fp, fpp, fppp, h, n, t0, y0)
 % COPYRIGHT (C) Russell Maguire 2017
 
 %% Time vector
-t = t0:h:t0+h*n;
+t = t0+h*(0:n);
 
 %% Preallocate solution
 y = zeros(size(t));
