@@ -21,16 +21,17 @@ function [x,t,u] = conv_diff_jordan(a,b,n,T,m,c,v,d,f)
 %   The stencil is used to produce a tridiagonal matrix for finding the
 %   solution u(x,j+1) from u(x,j) at time j, starting from u(x,0) which is
 %   given.
-%                             [s1 s2  0 ...  0]
-%                             [s0 s1 s2 ...  0]
-%       u(x,j+1) = S*u(x,j) = [ 0 s0 s1 ...  0] u(x,j)
-%                             [ :  :  :  '.  :]
-%                             [ 0  0  0 ... s1]
+%                             [s1 s2  0 ...  0  0]
+%                             [s0 s1 s2 ...  0  0]
+%       u(x,j+1) = S*u(x,j) = [ 0 s0 s1 ...  0  0] u(x,j)
+%                             [ :  :  :  '.  :  :]
+%                             [ 0  0  0 ... s1 s2]
+%                             [ 0  0  0 ... s2 s1]
 %
 %             [s0]   [0  1  0][ d*k + 1 ]
 %       where [s1] = [0 -1  1][  v*k/h  ]
 %             [s2]   [1 -2  1][c^2*k/h^2]
-
+%
 %   By diagonalising and elementwise-exponentiating a block diagonal matrix
 %   is constructed for finding the solution u(x,t) for all t in (0,T] from
 %   u(x,0) which is given.

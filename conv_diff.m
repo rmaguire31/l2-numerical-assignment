@@ -21,11 +21,12 @@ function [x,t,u] = conv_diff(a,b,n,T,m,c,v,d,f)
 %   The stencil is used to produce a tridiagonal matrix for finding the
 %   solution u(x,j+1) from u(x,j) at time j, starting from u(x,0) which is
 %   given.
-%                  [s1 s2  0 ...  0]
-%                  [s0 s1 s2 ...  0]
-%       u(x,j+1) = [ 0 s0 s1 ...  0] u(x,j)
-%                  [ :  :  :  '.  :]
-%                  [ 0  0  0 ... s1]
+%                  [s1 s2  0 ...  0  0]
+%                  [s0 s1 s2 ...  0  0]
+%       u(x,j+1) = [ 0 s0 s1 ...  0  0] u(x,j)
+%                  [ :  :  :  '.  :  :]
+%                  [ 0  0  0 ... s1 s2]
+%                  [ 0  0  0 ... s2 s1]
 %
 %             [s0]   [0  1  0][ d*k + 1 ]
 %       where [s1] = [0 -1  1][  v*k/h  ]
