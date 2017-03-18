@@ -2,17 +2,18 @@ function y = taylor4(f, fp, fpp, fppp, h, n, t0, y0)
 % TAYLOR4 Taylor series method assignment
 %
 % DESCRIPTION
-%   Estimate y for t in [t0, h*n] given it's first four derivates using
-%   Taylor's fourth order method described as follows:
+%   y = TAYLOR4(f, fp, fpp, fppp, h, n, t0, y0) estimates y for t in
+%   [t0, h*n] given it's first four derivates using Taylor's fourth order
+%   method described as follows:
 %       y(i+1) = y(i) + h*f(t(i),y(i)) + ... + h^4/4!*f'''(t(i),y(i))
 %       t(i) = t0 + i*h
 %       y(1) = y0
 %
 % INPUTS
-%   f   - dy/dx(t, y)
-%   fp  - d2y/dx2(t, y)
-%   fpp - d3y/dx3(t, y)
-%   fppp- d4y/dx4(t, y)
+%   f   - dy/dx(t,y)
+%   fp  - d2y/dx2(t,y)
+%   fpp - d3y/dx3(t,y)
+%   fppp- d4y/dx4(t,y)
 %   h   - step length in time
 %   n   - number of subintervals in time
 %   t0  - intitial time
