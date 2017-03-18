@@ -3,28 +3,44 @@ function [x,t,u] = conv_diff_jordan(a,b,n,T,m,c,v,d,f)
 %
 % DESCRIPTION
 %   Computes the particular solution for a convection-diffusion-reaction
-%   problem in 1D with a linear reaction component:
+%   problem in 1D with a proportional reaction component:
 %       u_t(x,t) = c^2*u_xx(x,t) + v*u_x(x,t) + d*u(x,t) in [a,b]x[0,T]
-%       u(a,t) = u(b,t) = 0 (Boundary Conditions)
-%       u(x,0) = f(x) (Initial Condition)
+%       BC: u(a,t) = u(b,t) = 0
+%       IC: u(x,0) = f(x)
+%
 %   This problem is approximated using the following formulae:
-%       u_t(x,t) = (u(x,t+k) - u(x,t))/k (Forward Difference)
-%       u_x(x,t) = (u(x+h,t) - u(x,t))/h (Forward Difference)
-%       u_xx(x,t) = (u(x+h,t) - 2*u(x,t) + u(x-h,t))/h^2
-%                                           (2nd Order Central Difference)
-%   Which reduces to the following stencil:
-%       u(i,j+1) = s0*u(i-1,j) + s1*u(i,j) + s2*u(i+1,j)
-%       s0 = c^2*k/h^2
-%       s1 = -2*c^2*k/h^2 - v*k/h + d*k + 1
-%       s2 = c^2*k/h^2 + v*k/h
+%       u_t(x,t) ~ DF_k u(x,t)|x = (u(x,t+k) - u(x,t))/k
+%       u_x(x,t) ~ DF_h u(x,t)|t = (u(x+h,t) - u(x,t))/h
+%       u_xx(x,t) ~ D2C_h u(x,t)|t = (u(x+h,t) - 2*u(x,t) + u(x-h,t))/h^2
+%
+%   Which reduces to the problem to the following stencil:
+%                  [ d*k + 1 ] [0  1  0][u(i-1,j)]
+%       u(i,j+1) = [  v*k/h  ].[0 -1  1][ u(i,j) ]
+%                  [c^2*k/h^2] [1 -2  1][u(i+1,1)]
+%
 %   The stencil is used to produce a tridiagonal matrix for finding the
 %   solution u(x,j+1) from u(x,j) at time j, starting from u(x,0) which is
 %   given.
-%       By diagonalising and elementwise-exponentiating a block diagonal
-%   matrix is constructed for finding the solution u(x,t) for all t in
-%   (0,T] from u(x,0) which is given. The Jordan-normal form of the
-%   tridiagonal matrix is used rather than the eigenvalues, so some
-%   numerical error is introduced.
+%                             [s1 s2  0 ...  0]
+%                             [s0 s1 s2 ...  0]
+%       u(x,j+1) = S*u(x,j) = [ 0 s0 s1 ...  0] u(x,j)
+%                             [ :  :  :  '.  :]
+%                             [ 0  0  0 ... s1]
+%
+%             [s0]   [0  1  0][ d*k + 1 ]
+%       where [s1] = [0 -1  1][  v*k/h  ]
+%             [s2]   [1 -2  1][c^2*k/h^2]
+
+%   By diagonalising and elementwise-exponentiating a block diagonal matrix
+%   is constructed for finding the solution u(x,t) for all t in (0,T] from
+%   u(x,0) which is given.
+%                [S   0 ...   0][f(x)]
+%       u(x,t) = [0 S^2 ...   0][f(x)] for t in (0,t]
+%                [:   :  '.   0][  : ]
+%                [0   0 ... S^m][f(x)]
+
+%   The Jordan-normal form of the tridiagonal matrix is used rather than
+%   the eigenvalues, so some numerical error is introduced.
 %
 % INPUTS
 %   a -  lower limit for interval in x
