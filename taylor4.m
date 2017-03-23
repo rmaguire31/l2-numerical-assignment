@@ -5,9 +5,9 @@ function y = taylor4(f, fp, fpp, fppp, h, n, t0, y0)
 %   y = TAYLOR4(f, fp, fpp, fppp, h, n, t0, y0) estimates y for t in
 %   [t0, h*n] given it's first four derivates using Taylor's fourth order
 %   method described as follows:
-%       y(i+1) = y(i) + h*f(t(i),y(i)) + ... + h^4/4!*f'''(t(i),y(i))
-%       t(i) = t0 + i*h
-%       y(1) = y0
+%       y_i+1 = y_i + h*f(t_i,y_i) + ... + h^4/4!*f'''(t_i,y_i)
+%       t_i+1 = t_i + h
+%       given y_0, t_0 and h
 %
 % INPUTS
 %   f   - dy/dx(t,y)
@@ -24,24 +24,20 @@ function y = taylor4(f, fp, fpp, fppp, h, n, t0, y0)
 %
 % COPYRIGHT (C) Russell Maguire 2017
 
-%% Time vector
-t = t0+h*(0:n);
-
-%% Preallocate solution
-y = zeros(size(t));
-
-% Apply intital condition
-y(1) = y0;
-
 %% Determine coefficients
 c = h.^(0:4)./factorial(0:4);
 
+%% Apply initial conditions
+y = y0;
+t = t0;
+
 %% Apply method
 for i = 1:n
-    y(i+1) = c * [y(i)
-                  f(t(i),y(i))
-                  fp(t(i),y(i))
-                  fpp(t(i),y(i))
-                  fppp(t(i),y(i))];
+    y = c * [y
+             f(t,y)
+             fp(t,y)
+             fpp(t,y)
+             fppp(t,y)];
+    t = t + h;
 end
 end

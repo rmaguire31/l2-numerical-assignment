@@ -5,7 +5,7 @@ function taylor_series_method()
 
 n = [10 20 40 80];
 
-y = {{@(t)-cos(t)  @(t,y)sin(t) @(t,y)cos(t) @(t,y)-sin(t) @(t,y)-cos(t)}
+y = {{@(t)1-cos(t) @(t,y)sin(t) @(t,y)cos(t) @(t,y)-sin(t) @(t,y)-cos(t)}
      {@(t)exp(5*t) @(t,y)5*y    @(t,y)25*y   @(t,y)125*y   @(t,y)625*y}
      {@(t)2*t      @(t,y)2      @(t,y)0      @(t,y)0       @(t,y)0}}';
 t0 = {0 0 0};
@@ -20,22 +20,22 @@ methods = struct('f', f, 'm', m);
 table1 = zeros(length(n), length(methods), length(odes));
 table2 = table1;
 for i = 1:length(n)
-    for j = 1:length(methods)
-        for k = 1:length(odes)
-            f = odes(k).y(1+(1:methods(j).m));
-            h = (odes(k).tn - odes(k).t0)/n(i);
-            t0 = odes(k).t0;
-            y0 = odes(k).y0;
+    for j = 1:length(odes)
+        for k = 1:length(methods)
+            f = odes(j).y(1+(1:methods(k).m));
+            h = (odes(j).tn - odes(j).t0)/n(i);
+            t0 = odes(j).t0;
+            y0 = odes(j).y0;
             
-            y_est = methods(j).f(f{:}, h, n(i), t0, y0);
-            y_actual = odes(k).y{1}(odes(k).tn);
+            y_est = methods(k).f(f{:}, h, n(i), t0, y0);
+            y_actual = odes(j).y{1}(odes(j).tn);
             
-            table1(i, j, k) = y_est(end);
-            table2(i, j, k) = abs(y_actual - y_est(end));
+            table1(i, j, k) = y_est;
+            table2(i, j, k) = abs(y_actual - y_est);
         end
     end
 end
-table1 = array2table(reshape(table1, [], size(table1, 2)));
+table1 = array2table(reshape(table1, [], size(table1, 3)));
 table1.Properties.VariableNames = {'euler', 'taylor2', 'taylor4'};
 table1.Properties.RowNames = {'f(x,y)=sin(t),n=10'
                               'f(x,y)=sin(t),n=20'
@@ -49,7 +49,7 @@ table1.Properties.RowNames = {'f(x,y)=sin(t),n=10'
                               'f(x,y)=2,n=20'
                               'f(x,y)=2,n=40'
                               'f(x,y)=2,n=80'};
-table2 = array2table(reshape(table2, [], size(table2, 2)));
+table2 = array2table(reshape(table2, [], size(table2, 3)));
 table2.Properties.VariableNames = {'err_euler', 'err_taylor2', 'err_taylor4'};
 table2.Properties.RowNames = {'f(x,y)=sin(t),n=10'
                               'f(x,y)=sin(t),n=20'
