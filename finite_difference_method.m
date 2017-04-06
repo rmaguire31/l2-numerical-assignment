@@ -12,28 +12,33 @@ T = 0.2;
 c = 1;
 v = 0.5;
 d = 0.02;
-f = @(x)4*x + 4*x.^2;
+f = @(x) 4*x - 4*x.^2;
 
-n = [4, 16 32];
+n = [4 16 32];
 m = [10 100 200 400 800];
 
-% Cartesian product of n and m.
-[N, M] = meshgrid(n, m);
-nm = [N(:) M(:)];
+% Cartesian product of m and n.
+[M, N] = meshgrid(m, n);
+mn = [M(:) N(:)];
 
-table3 = zeros(size(nm,1), 3);
-for i = 1:size(nm)
-    n = nm(i,1);
-    m = nm(i,2);
+table3 = cell(size(mn,1), 4);
+for i = 1:size(mn)
+    m = mn(i,1);
+    n = mn(i,2);
     [x, t, u] = conv_diff(a, b, n, T, m, c, v, d, f);
     
-    surf(t, x, u);
+    table3(i,1) = {sprintf('%.3g', n)};
+    table3(i,2) = {sprintf('%.3g', m)};
+    table3(i,3) = {sprintf('%.3g', u(x==xc,t==tc))};
     
-    table3(i,1) = n;
-    table3(i,2) = m;
-    table3(i,3) = u(x==xc,t==tc);
+    h = (b-a)/n;
+    k = T/m;
+    G = max([abs(1 + d*k - 2*c^2*k/h^2 + abs(v*k/h + 1i*2*c^2*k/h^2))
+             abs(1 + d*k - 2*c^2*k/h^2 - abs(v*k/h + 1i*2*c^2*k/h^2))]);
+    
+    table3(i,4) = {sprintf('%.3g', G)};
 end
 table3 = array2table(table3);
-table3.Properties.VariableNames = {'n', 'm', 'u'};
+table3.Properties.VariableNames = {'n', 'm', 'u', 'G'};
 disp(table3);
 end
