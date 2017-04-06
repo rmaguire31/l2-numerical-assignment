@@ -17,7 +17,7 @@ f = {@euler @taylor2 @taylor4};
 m = {1, 2, 4};
 methods = struct('f', f, 'm', m);
 
-table1 = zeros(length(n), length(methods), length(odes));
+table1 = cell(length(n), length(methods), length(odes));
 table2 = table1;
 for i = 1:length(n)
     for j = 1:length(odes)
@@ -30,8 +30,8 @@ for i = 1:length(n)
             y_est = methods(k).f(f{:}, h, n(i), t0, y0);
             y_actual = odes(j).y{1}(odes(j).tn);
             
-            table1(i, j, k) = y_est;
-            table2(i, j, k) = abs(y_actual - y_est);
+            table1(i, j, k) = {sprintf('%.2e', y_est)};
+            table2(i, j, k) = {sprintf('%.2e', abs(y_actual - y_est))};
         end
     end
 end
