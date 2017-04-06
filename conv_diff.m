@@ -11,13 +11,13 @@ function [x,t,u] = conv_diff(a,b,n,T,m,c,v,d,f)
 %
 %   This problem is approximated using the following formulae:
 %       u_t(x,t) ~ DF_k u(x,t)|x = (u(x,t+k) - u(x,t))/k
-%       u_x(x,t) ~ DF_h u(x,t)|t = (u(x+h,t) - u(x,t))/h
+%       u_x(x,t) ~ DC_h u(x,t)|t = (u(x+h,t) - u(x-h,t))/2*h
 %       u_xx(x,t) ~ D2C_h u(x,t)|t = (u(x+h,t) - 2*u(x,t) + u(x-h,t))/h^2
 %
 %   Which reduces to the problem to the following stencil:
-%                  [ d*k + 1 ] [0  1  0][u(i-1,j)]
-%       u(i,j+1) = [  v*k/h  ].[0 -1  1][ u(i,j) ]
-%                  [c^2*k/h^2] [1 -2  1][u(i+1,j)]
+%                  [ d*k + 1 ] [ 0  1  0][u(i-1,j)]
+%       u(i,j+1) = [0.5*v*k/h].[-1  0  1][ u(i,j) ]
+%                  [c^2*k/h^2] [ 1 -2  1][u(i+1,j)]
 %
 %   The stencil is used to produce a tridiagonal matrix for finding the
 %   solution u(x,j+1) from u(x,j) at time j, starting from u(x,0) which is
@@ -29,9 +29,9 @@ function [x,t,u] = conv_diff(a,b,n,T,m,c,v,d,f)
 %                  [ 0  0  0 ... s1 s2]
 %                  [ 0  0  0 ... s2 s1]
 %
-%             [s0]   [0  1  0][ d*k + 1 ]
-%       where [s1] = [0 -1  1][  v*k/h  ]
-%             [s2]   [1 -2  1][c^2*k/h^2]
+%             [s0]   [ 0  1  0][ d*k + 1 ]
+%       where [s1] = [-1  0  1][0.5*v*k/h]
+%             [s2]   [ 1 -2  1][c^2*k/h^2]
 % INPUTS
 %   a -  lower limit for interval in x
 %   b -  upper limit for interval in x
@@ -69,9 +69,9 @@ u([1 end], :) = 0;
 %% Construct stencil for each time slot.
 % The zero boundary conditions mean rows and columns for u_0 and u_n can be
 % removed giving an order n-1 stencil.
-s = [d*k+1 v*k/h c^2*k/h^2] * [0  1 0   % Zeroth order
-                               0 -1 1   % First order
-                               1 -2 1]; % Second order
+s = [d*k+1 0.5*v*k/h c^2*k/h^2]*[ 0  1  0
+                                 -1  0  1    % DC
+                                  1 -2  1 ]; % D2C
 S = spdiags(repmat(s, n-1, 1), -1:1, n-1, n-1);
 
 %% Apply stencil at each time 
