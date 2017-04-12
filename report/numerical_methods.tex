@@ -7,7 +7,7 @@
 \usepackage{mathtools}
 
 % Set top and bottom to 1in too.
-\usepackage[left=1in,right=1in,top=0.8in,bottom=0.8in]{geometry}
+\usepackage[margin=1in]{geometry}
 
 \usepackage{titling}
 \usepackage{nomencl}
@@ -27,6 +27,7 @@
 
 \usepackage{varioref}
 \usepackage{xspace}
+\usepackage{textcomp}
 \usepackage[activate={true,nocompatibility},final,tracking=true,kerning=true,spacing=nonfrench,factor=1100,stretch=10,shrink=10]{microtype}
 % activate={true,nocompatibility} - activate protrusion and expansion final -
 % enable microtype; use "draft" to disable tracking=true, kerning=true,
@@ -38,27 +39,15 @@
 
 % Document info.
 \author{Z0966990}
-\title{Numerical Methods in \textsc{Matlab}}
+\title{Numerical Methods in \textsc{Matlab}\textsuperscript{\textregistered}}
 \date{\today}
 
 % Path to images.
 \graphicspath{{img/}}
 
-% Setup nomenclature.
-\newlength{\nomtitlesep}
-\setlength{\nomtitlesep}{\nomitemsep}
-\setlength{\nomitemsep}{-0\parsep}
-\renewcommand\nomgroup[1]{
-    \ifthenelse{\equal{#1}{A}}{
-        \itemsep\nomtitlesep
-        \item[\textbf{Acronyms}]
-        \itemsep\nomitemsep}{  
-}}
-\newcommand{\nomindex}[1]{
-    \hspace*{\fill}
-    \makebox[5em][l]{#1}
-}
-\makenomenclature
+% Setup bibiliography.
+\renewcommand{\bibfont}{\footnotesize}
+\addbibresource{numerical_methods.bib}
 
 % Setup bibiliography.
 
@@ -72,7 +61,11 @@
 \renewcommand{\footrulewidth}{0pt}
 
 % Macros.
-
+\newcommand{\textsc{fdm}}{\textsc{fdm}\xspace}
+\newcommand{\textsc{ode}}{\textsc{ode}\xspace}
+\newcommand{\textsc{ode}s}{\textsc{ode}s\xspace}
+\newcommand{\textsc{pde}}{\textsc{pde}\xspace}
+\newcommand{\textsc{pde}s}{\textsc{pde}s\xspace}
 \begin{document}
     
 % Title page.
@@ -88,101 +81,59 @@
     \vspace*{\fill}
 \end{titlepage}
 
-%Main matter.
-% \renewcommand{\abstractname}{\large Abstract}
-% \twocolumn[
-% \begin{@twocolumnfalse}
-%     \begin{abstract}
-%     \end{abstract}
-% \end{@twocolumnfalse}
-% \vspace{\parsep}
-% ]
-
-% Acronyms
-
-\printnomenclature
+% Main matter.
 
 \section{Taylor Series Method}
 
-The $p$\textsuperscript{th} order Taylor's series method for ODEs finds
+The $p$\textsuperscript{th} order Taylor's series method for \textsc{ode}s finds
 numerical approximations to equations of the form $y'(t) = f(t,y)$. In $n$ steps
 it approximates the solution $y_n$ at some time $T$ given an initial condition:
-\begin{footnotesize}
-    \vspace{-0.5\baselineskip}
-    \begin{equation} \label{eq:taylor-method}
-        \begin{aligned}
-            t_0 &= 0 &
-            y_0 &= y(0) \\
-            t_{i+1} &= t_i + h &
-            y_{i+1} &= y_i + \sum_{k=1}^{p}\frac{h^k}{k!}f^{(k-1)}(t_i,y_i) \\
-            t_n &= T &
-            y_n &\approx y(T) 
-        \end{aligned}
-    \end{equation}
-    \vspace{-1.5\baselineskip}
-\end{footnotesize}
-
-\hspace{-\parindent}where $h = T/n$ and is the stepsize.
+{\footnotesize
+\begin{equation} \label{eq:taylor-method}
+    \begin{aligned}
+        t_0 &= 0 &
+        y_0 &= y(0) \\
+        t_{i+1} &= t_i + h &
+        y_{i+1} &= y_i + \sum_{k=1}^{p}\frac{h^k}{k!}f^{(k-1)}(t_i,y_i) \\
+        t_n &= T &
+        y_n &\approx y(T) 
+    \end{aligned}
+\end{equation}
+}where $h = T/n$ and is the step-size.
 
 The use of successive approximations results in an error composed of the
 accumulation error and truncation error at each step. At time $T$, this is
 the final global error:
-\begin{footnotesize}
-    \vspace{-0.5\baselineskip}
-    \begin{equation} \label{eq:error}
+{\footnotesize
+\begin{equation} \label{eq:error}
         \epsilon_n = |y_n - y(T)| = O(h^p) = O(n^{-p})
-    \end{equation}
-    \vspace{-1.5\baselineskip}
-\end{footnotesize}
+\end{equation}
 
-A \textsc{Matlab} implementation of \eqref{eq:taylor-method} with order 4 was
-applied to three ODEs of the form $y'(t) = f(t,y)$. These were defined as
-follows:
-\begin{footnotesize}
-    \vspace{-0.5\baselineskip}
-    \begin{align}
-        \tag{a}\label{ode:a}
-        y'(t) &= \sin(t) & y(0) &= 0 & 0 &\leq t \leq \pi  \\
-        \tag{b}\label{ode:b}
-        y'(t) &= 5y(t)   & y(0) &= 1 & 0 &\leq t \leq 0.1 \\
-        \tag{c}\label{ode:c}
-        y'(t) &= 2       & y(0) &= 0 & 0 &\leq t \leq 1
-    \end{align}
-    \vspace{-1.5\baselineskip}
-\end{footnotesize}
+}A \textsc{Matlab} implementation of \eqref{eq:taylor-method} with order 4 was
+applied to three \textsc{ode}s of the form $y'(t) = f(t,y)$. These were defined 
+as follows:
+{\footnotesize
+\begin{align}
+    \tag{a}\label{ode:a}
+    y'(t) &= \sin(t) & y(0) &= 0 & 0 &\leq t \leq \pi  \\
+    \tag{b}\label{ode:b}
+    y'(t) &= 5y(t)   & y(0) &= 1 & 0 &\leq t \leq 0.1 \\
+    \tag{c}\label{ode:c}
+    y'(t) &= 2       & y(0) &= 0 & 0 &\leq t \leq 1
+\end{align}
 
-In order to apply the fourth order Taylor's series method, the 
-1\textsuperscript{st}--3\textsuperscript{rd} derivatives of $f(t, y)$ had
-to be found:
-\begin{table}[H]
-    \centering
-    \footnotesize
-    \vspace{-\baselineskip}
-    \begin{tabular}{rrrr}
-        & ODE~\eqref{ode:a} & ODE~\eqref{ode:b} & ODE~\eqref{ode:c} \\
-        \cmidrule(lr){2-2}\cmidrule(lr){3-3}\cmidrule(lr){4-4}
-        $f(t,y)$\tnote{*} & $\sin(t)$  & $5y$   & 2 \\
-        $f'(t,y)$         & $\cos(t)$  & $25y$  & 0 \\
-        $f''(t,y)$        & $-\sin(t)$ & $125y$ & 0 \\
-        $f'''(t,y)$       & $-\cos(t)$ & $625y$ & 0 \\
-    \end{tabular}
-\vspace{-\baselineskip}
-\end{table}
-
-\vspace{-\baselineskip}
-\subsection{Results}
+}\subsection{Results}
 
 The results of the fourth order Taylor series method were compared to the 
 results of Taylor's second and Euler's method---which is a first order 
 Taylor's series method. Table~\ref{table:ode} lists $y_n$ for different numbers 
 of iterations $n$.
+
 \begin{table}[h]
     \centering
     \footnotesize
-    \vspace{-0.5\baselineskip}
-    \caption{ODE Verification Simulations}
+    \caption{\textsc{Ode} Verification Simulations}
     \label{table:ode}
-    \vspace{-0.5\baselineskip}
     \begin{threeparttable}
         \begin{tabular}{
             @{}
@@ -195,26 +146,26 @@ of iterations $n$.
         }
             \toprule
             & $n$
-            & {\bf Euler\tnote{*}}
-            & {\bf Taylor 2\textsuperscript{nd}\tnote{*}}
-            & {\bf Taylor 4\textsuperscript{th}\tnote{*}} \\
+            & {\bf Euler\tnote{$\dagger$}}
+            & {\bf Taylor 2\textsuperscript{nd}\tnote{$\dagger$}}
+            & {\bf Taylor 4\textsuperscript{th}\tnote{$\dagger$}} \\
             \midrule
             \multirow{4}{*}{\rotatebox[origin=c]{90}{
-                \shortstack{ODE~\eqref{ode:a}\\at $t=\mathrm{\pi}$}}}
+                \shortstack{\textsc{ode}~\eqref{ode:a}\\at $t=\mathrm{\pi}$}}}
             & 10 & 1.99 & 2.03 & 2.00 \\
             & 20 & 2.00 & 2.01 & 2.00 \\
             & 40 & 2.00 & 2.00 & 2.00 \\
             & 80 & 2.00 & 2.00 & 2.00 \\
             \midrule
             \multirow{4}{*}{\rotatebox[origin=c]{90}{
-                \shortstack{ODE~\eqref{ode:b}\\at $t=0.1$}}}
+                \shortstack{\textsc{ode}~\eqref{ode:b}\\at $t=0.1$}}}
             & 10 & 1.63 & 1.65 & 1.65 \\
             & 20 & 1.64 & 1.65 & 1.65 \\
             & 40 & 1.64 & 1.65 & 1.65 \\
             & 80 & 1.65 & 1.65 & 1.65 \\
             \midrule
             \multirow{4}{*}{\rotatebox[origin=c]{90}{
-                \shortstack{ODE~\eqref{ode:c}\\at $t=1$}}}
+                \shortstack{\textsc{ode}~\eqref{ode:c}\\at $t=1$}}}
             & 10 & 2.00 & 2.00 & 2.00 \\
             & 20 & 2.00 & 2.00 & 2.00 \\
             & 40 & 2.00 & 2.00 & 2.00 \\
@@ -222,42 +173,30 @@ of iterations $n$.
             \bottomrule
         \end{tabular}
         \begin{tablenotes}
-            \item[*] Accurate to 3 significant figures.
+            \item[$\dagger$] Accurate to 3 significant figures.
         \end{tablenotes}
     \end{threeparttable}
-    \vspace{-\baselineskip}
 \end{table}
 
-\vspace{-\baselineskip}
-ODE~\eqref{ode:c} had no non-zero derivatives in $f(t,y)$, so Euler's method
-contained sufficiently many terms to find $y_n$ when $T=1$; higher order
-methods behaved as Euler's method. For ODEs \eqref{ode:b} and \eqref{ode:c},
-many more iterations were required for the lower order methods to converge on a
-value for $y_n$.
+\textsc{Ode}~\eqref{ode:c} had no non-zero derivatives in $f(t,y)$, so Euler's 
+method contained sufficiently many terms to find $y_n$ when $T=1$---higher order
+methods behaved as Euler's method. For \textsc{ode}s \eqref{ode:b} and 
+\eqref{ode:c}, many more iterations were required for the lower order methods 
+to converge on a value for $y_n$ as the higher order coefficients were larger.
 
-For each ODE, analytical solutions were provided:
-\begin{footnotesize}
-    \vspace{-0.5\baselineskip}
-    \begin{align}
-        y(t) &= -\cos(t) + 1    \tag{\sc\ref{ode:a}}\label{soln:a} \\ 
-        y(t) &= \mathrm{e}^{5t} \tag{\sc\ref{ode:b}}\label{soln:b} \\
-        y(t) &= 2t              \tag{\sc\ref{ode:c}}\label{soln:c}
-    \end{align}
-    \vspace{-1.5\baselineskip}
-\end{footnotesize}
+The exact errors of the results in Table~\ref{table:ode} are detailed in 
+Table~\ref{table:err}, in which \textsc{ode}s \eqref{ode:a} and \eqref{ode:b} 
+demonstrate how increasing the number of iterations reduces the final global 
+error, as suggested in \eqref{eq:error}. Equation~\eqref{eq:error} also 
+suggests increasing the order of the Taylor's series method reduces the final 
+global error. Particularly for \textsc{ode}~\eqref{ode:b}, doubling the order 
+of the method halved the magnitude of the error.
 
-\hspace{-\parindent}where \eqref{soln:a}--\eqref{soln:c} are the exact solutions
-to ODEs \eqref{ode:a}--\eqref{ode:c}.
-
-Using these solutions, the exact errors of the results in Table~\ref{table:ode}
-can be found. These are detailed in Table~\ref{table:err}.
 \begin{table}[h]
     \centering
     \footnotesize
-    \vspace{-0.5\baselineskip}
-    \caption{ODE Errors}
+    \caption{\textsc{Ode} Errors}
     \label{table:err}
-    \vspace{-0.5\baselineskip}
     \begin{threeparttable}
         \begin{tabular}{
             @{}
@@ -270,26 +209,28 @@ can be found. These are detailed in Table~\ref{table:err}.
         }
             \toprule
             & {$n$}
-            & {\bf\shortstack{Euler\\Error\tnote{*}}}
-            & {\bf\shortstack{Taylor 2\textsuperscript{nd}\\Error\tnote{*}}}
-            & {\bf\shortstack{Taylor 4\textsuperscript{th}\\Error\tnote{*}}} \\
+            & {\bf\shortstack{Euler\\Error\tnote{$\dagger$}}}
+            & {\bf\shortstack{Taylor 2\textsuperscript{nd}\\
+                Error\tnote{$\dagger$}}}
+            & {\bf\shortstack{Taylor 4\textsuperscript{th}\\
+                Error\tnote{$\dagger$}}}\\
             \midrule
             \multirow{4}{*}{\rotatebox[origin=c]{90}{
-                \shortstack{ODE~\eqref{ode:a}\\at $t=\mathrm{\pi}$}}}
+                \shortstack{\textsc{Ode}~\eqref{ode:a}\\at $t=\mathrm{\pi}$}}}
             & 10 & 1.65e-02 & 3.29e-02 & 1.62e-04 \\
             & 20 & 4.11e-03 & 8.22e-03 & 1.01e-05 \\
             & 40 & 1.03e-03 & 2.06e-03 & 6.34e-07 \\
             & 80 & 2.57e-04 & 5.14e-04 & 3.96e-08 \\
             \midrule
             \multirow{4}{*}{\rotatebox[origin=c]{90}{
-                \shortstack{ODE~\eqref{ode:b}\\at $t=0.1$}}}
+                \shortstack{\textsc{Ode}~\eqref{ode:b}\\at $t=0.1$}}}
             & 10 & 1.98e-02 & 3.31e-04 & 4.12e-08 \\ 
             & 20 & 1.01e-02 & 8.43e-05 & 2.63e-09 \\ 
             & 40 & 5.10e-03 & 2.13e-05 & 1.66e-10 \\ 
             & 80 & 2.56e-03 & 5.34e-06 & 1.04e-11 \\ 
             \midrule
             \multirow{4}{*}{\rotatebox[origin=c]{90}{
-                \shortstack{ODE~\eqref{ode:c}\\at $t=1$}}}
+                \shortstack{\textsc{Ode}~\eqref{ode:c}\\at $t=1$}}}
             & 10 & 2.22e-16 & 2.22e-16 & 2.22e-16 \\ 
             & 20 & 4.44e-16 & 4.44e-16 & 4.44e-16 \\ 
             & 40 & 8.88e-16 & 8.88e-16 & 8.88e-16 \\ 
@@ -297,88 +238,62 @@ can be found. These are detailed in Table~\ref{table:err}.
             \bottomrule
         \end{tabular}
         \begin{tablenotes}
-            \item[*] Accurate to 3 significant figures.
+            \item[$\dagger$] Accurate to 3 significant figures.
         \end{tablenotes}
     \end{threeparttable}
-    \vspace{-\baselineskip}
 \end{table}
 
-ODEs \eqref{ode:a} and \eqref{ode:b} demonstrate how increasing the number of
-iterations reduces the final global error, as suggested in \eqref{eq:error}.
-Equation~\eqref{eq:error} also suggests increasing the order of the Taylor's
-series method reduces the final global error. Particularly for
-ODE~\eqref{ode:b}, doubling the order of the method halved the magnitude of the
-error.
 
-However, it was established for ODE~\eqref{ode:c} that higher order methods
-behaved as Euler's method, so the order of the method has no effect on accuracy.
-Contray to \eqref{eq:error} the error increased with the number of iterations.
-This can be explained by the error in encoding the fraction $h$---for example,
-when $n=10$, \textsc{Matlab}'s binary64 format cannot encode every bit of the
-recurring binary fraction $h=0.1=0.0\dot{0}01\dot{1}_2$. The termination of the
-recurring fractions is called round off error, and is present for all chosen
-values of $n$. As the number of iterations $n$ increase, more round off error
-accumulates.
 
-\vspace{-\baselineskip}
+For \textsc{ode}~\eqref{ode:c}, higher order methods behave as Euler's method, 
+so the order of the method has no effect on accuracy. Contrary to 
+\eqref{eq:error} the error increased with the number of iterations. This can be 
+explained by the round off error in $h$. When $n=10$, binary64 format cannot 
+encode every bit of the recurring binary fraction
+\mbox{$h=0.0\dot{0}01\dot{1}_2$}. As the number of iterations $n$ increase, 
+more round off error accumulates.
+
 \section{Finite Difference\\Method}
 
-In physics and engineering, the convection--diffusion--reaction equation
-describes how species mass concentration $u$ varies in space $\mathbf{x}$ with
-time $t$. The parabolic equation includes the effects of convection
-$\mathbf{v}\cdot\nabla u$, wherein the mass has a net velocity $\mathbf{v}$; 
-diffusion $c^2\nabla^2u$, where random motion will cause the mass to disperse 
-over time; and reaction $du$, which acts as a sink or source for the total mass 
-in the system to change over time---often present when chemical reactions are 
-taking place.
+The convection--diffusion--reaction equation can be used to describe how mass 
+concentration $u$ varies in space $\mathbf{x}$ with time $t$. The parabolic 
+equation includes convection $\mathbf{v}\cdot\nabla u$, wherein the mass has a 
+net velocity $\mathbf{v}$; diffusion $c^2\nabla^2u$, where random motion 
+disperses mass over time; and reaction $du$, a sink or source of mass---present 
+when chemical reactions are taking place.
 
 The equation can also be applied to heat transfer, where $u$ represents heat.
 
-In 1D, the convection--diffusion--reaction equation is defined as follows:
-\begin{footnotesize}
-    \vspace{-0.5\baselineskip}
-    \begin{align}
-        \label{eq:pde}
-        \begin{split}
-            \forall x,t &\in (a, b) \times (0, T] \\
-            u_{t}(x,t) &= c^2u_{xx}(x,t) + vu_x(x,t) + du(x,t)
-        \end{split} \\[0.2\baselineskip]
-        \nonumber
-        \forall t &\in (0, T] \left\{
-        \begin{array}{l}
-            u(a,t) = 0 \\
-            u(b,t) = 0
-        \end{array}
-        \right.\\[0.2\baselineskip]
-        \nonumber
-        \forall x &\in [a, b]\hspace{1.8em}u(x,0) = f(x)
-    \end{align}
-    \vspace{-1.5\baselineskip}
-\end{footnotesize}
+In \textsc{1d}, the convection--diffusion--reaction equation is defined as 
+follows:
+{\footnotesize
+    \begin{multline} \label{eq:pde}
+            \forall x,t \in (a, b) \times (0, T] \\
+            u_t(x,t) = c^2u_{xx}(x,t) + vu_x(x,t) + du(x,t)
+    \end{multline}
+}with homogenous Dirichlet boundary conditions and initial condition 
+\mbox{$u(x,0)=f(x)$} applied.
 
-One possible FDM schema was devised to numerically solve \eqref{eq:pde}, which
-is second order in space with interval $h$ and first order in time with timestep
-$k$. The schema was implemented in \textsc{Matlab} as follows:
-\begin{footnotesize}
-    \vspace{-0.5\baselineskip}
+A \textsc{fdm} schema was devised to numerically solve \eqref{eq:pde}, second order in 
+space with interval $h$, first order in time with time-step $k$, and 
+implemented in \textsc{Matlab} as follows:
+{\footnotesize
     \begin{multline} \label{eq:schema}
         u^i_{j+1} = u^i_j + dku^i_j + \frac{vk}{2h}(u^{i+1}_j - u^{i-1}_j) \\
             + \frac{c^2k}{h^2}(u^{i+1}_j - 2u^i_j + u^{i-1}_j)
     \end{multline}
-    \vspace{-1.5\baselineskip}
-\end{footnotesize}
 
-Errors in FDM schema can grow or be damped out at each timestep, leading to a
+}Errors in \textsc{fdm} schema can grow or be damped out at each time-step, leading to a
 stable and accurate, or unstable solutions. Von Neumann stability analysis 
-assumes errors are amplified by a constant factor. An expression for
-amplification factor can be determined by expressing the errors as a Fourier 
-series in space. Stability necessitates the amplification factor is less than 
-unity for all frequencies resolable in the grid.
+assumes these errors are amplified by a constant
+factor~\cite{charney1950numerical}. An expression for amplification factor is 
+determined by expressing the errors as a Fourier series in space. Stability 
+necessitates the amplification factor is less than unity for all frequencies 
+resolvable in the grid.
 
 Applying von Neumann stability analysis to \eqref{eq:schema} yielded the 
 following stability criterion, and expression for the amplification factor:
-\begin{footnotesize}
-    \vspace{-0.5\baselineskip}
+{\footnotesize
     \begin{gather}
         \label{eq:stability}
         G = \left| 1 + R - 2S \pm \sqrt{(2S)^2 + C^2} \right|
@@ -388,59 +303,48 @@ following stability criterion, and expression for the amplification factor:
             R &= dk & C &= \frac{vk}{h} & S &= \frac{c^2k}{h^2}
         \end{aligned}
     \end{gather}
-    \vspace{-1.5\baselineskip}
-\end{footnotesize}
+}where $R$, $C$ and $S$ are dimensionless quantities: the reaction, Courant and 
+diffusion numbers. $\epsilon$ is a constant assumed to be smaller than 
+\num{800e-3}.
 
-\hspace{-\parindent}where $R$, $C$ and $S$ are dimensionless quantities: the
-reaction, Courant (convection) and diffusion numbers. $\epsilon$ is a
-sufficently small constant which in the following analysis has been assumed to 
-be smaller than \num{800e-3}.
-
-The \textsc{Matlab} model and stability criterion were tested using the
-convection--diffusion--reaction equation with the following coefficients:
-\begin{footnotesize}
-    \vspace{-0.5\baselineskip}
+The model was tested on the following:
+{\footnotesize
     \begin{align*}
         c &= 1    & a &= 0   & m,n  =&\;\{10,100,200,400,800\} \\
         v &= 0.5  & b &= 1   &       &\;\times \{4,16,32\} \\
         d &= 0.02 & T &= 0.2 & f(x) =&\;4x - 4x^2
     \end{align*}
-    \vspace{-1.5\baselineskip}
-\end{footnotesize}
 
-With these coefficients fixed, the amplification factor in \eqref{eq:stability}
+}With these coefficients fixed, the amplification factor in \eqref{eq:stability}
 varies as follows:
-\begin{footnotesize}
-    \vspace{-0.5\baselineskip}
+{\footnotesize
     \begin{equation} \label{eq:gain}
         G = O(k/h^2) = O(n^2/m)
     \end{equation}
-    \vspace{-1.5\baselineskip}
-\end{footnotesize}
 
-\vspace{-\baselineskip}
-\subsection{Results}
+}\subsection{Results}
 
-Table~\ref{table:pde} lists the solved value of \eqref{eq:pde} at the midpoint
-of the interval at time $T$, for each combination of $n$ and $m$.
+Table~\ref{table:pde} lists the value of \eqref{eq:pde} at the midpoint of the 
+interval at time $T$, for each $n$ and $m$.
 
 \begin{table}[h]
     \centering
     \footnotesize
-    \vspace{-0.5\baselineskip}
-    \caption{PDE Verification Simulations}
+    \caption{\textsc{Pde} Verification Simulations}
     \label{table:pde}
-    \vspace{-0.5\baselineskip}
     \begin{threeparttable}
         \begin{tabular}{
+            @{\hspace{1em}}
             S[table-format=2]
             S[table-format=3]
             S[table-format=+2.2e2]
-            S[table-format=2.2e+1]
+            S[table-format=2.2]
+            @{\hspace{1em}}
         }
             \toprule
-            {$n$} & {$m$} & {$u(0.5,0.2)$\tnote{*}} & {$G$\tnote{*}}\\
-            \cmidrule(r){1-3}\cmidrule(l){4-4}
+            {$n$} & {$m$} & {$u(0.5,0.2)$\tnote{$\dagger$}} & 
+                {$G$\tnote{$\dagger$}}\\
+            \cmidrule(rl){1-3}\cmidrule(rl){4-4}
              4 &  10 &    0.129   &  1.00 \\\rowcolor{red!20}
             16 &  10 &   -1.13e7  & 19.5  \\\rowcolor{red!20}
             32 &  10 &  -87.3     & 80.9  \\
@@ -461,16 +365,15 @@ of the interval at time $T$, for each combination of $n$ and $m$.
         \begin{tablenotes}
             \item\colorbox{red!20}{Unstable: unable to satisfy
                 \eqref{eq:stability}.}
-            \item[*] Accurate to 3 significant figures.
+            \item[$\dagger$] Accurate to 3 significant figures.
         \end{tablenotes}
     \end{threeparttable}
-    \vspace{-\baselineskip}
 \end{table}
 
-The highlighted simulations with a gain greater than unity do not appear to
+The highlighted simulations with a gain greater than unity did not appear to
 converge on similar values to those determined stable by \eqref{eq:stability}.
-This occured when there were too many intervals in space for a given number of
-timesteps, as predicted by \eqref{eq:gain}.
+This occurred when there were too many intervals in space for a given number of
+time-steps, as predicted by \eqref{eq:gain}.
 
 % References.
 \printbibliography
