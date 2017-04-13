@@ -2,21 +2,23 @@ function [x,t,u] = conv_diff(a,b,n,T,m,c,v,d,f)
 % CONV_DIFF Convection-diffusion-reaction FDM assignment
 %
 % DESCRIPTION
-%     [x,t,u] = CONV_DIFF(a,b,n,T,m,c,v,d,f) computes the particular
-%     solution for a convection-diffusion-reaction problem in 1D with a
-%     linear reaction component:
-%         u_t(x,t) = c^2*u_xx(x,t) + v*u_x(x,t) + d*u(x,t) in [a,b]x[0,T]
-%         BC: u(a,t) = u(b,t) = 0
-%         IC: u(x,0) = f(x)
+%   [x,t,u] = CONV_DIFF(a,b,n,T,m,c,v,d,f) computes the particular
+%   solution for a convection-diffusion-reaction problem in 1D with a
+%   linear reaction component:
+%       u_t(x,t) = c^2*u_xx(x,t) + v*u_x(x,t) + d*u(x,t) in [a,b]x[0,T]
+%       BC: u(a,t) = u(b,t) = 0
+%       IC: u(x,0) = f(x)
 %
 %   This problem is approximated using the following formulae:
 %       u_t(x,t) ~ DF_k u(x,t)|x = (u(x,t+k) - u(x,t))/k
-%       u_x(x,t) ~ DC_h u(x,t)|t = (u(x+h,t) - u(x-h,t))/2*h
+%       u_x(x,t) ~ DF_h u(x,t)|t = (u(x+h,t) - u(x,t))/h
 %       u_xx(x,t) ~ D2C_h u(x,t)|t = (u(x+h,t) - 2*u(x,t) + u(x-h,t))/h^2
+%   NB: Forward difference is chosen over central difference for it's
+%   increased stability.
 %
 %   Which reduces to the problem to the following stencil:
 %                  [ d*k + 1 ] [ 0  1  0][u(i-1,j)]
-%       u(i,j+1) = [0.5*v*k/h].[-1  0  1][ u(i,j) ]
+%       u(i,j+1) = [0.5*v*k/h].[ 0 -1  1][ u(i,j) ]
 %                  [c^2*k/h^2] [ 1 -2  1][u(i+1,j)]
 %
 %   The stencil is used to produce a tridiagonal matrix for finding the
@@ -30,7 +32,7 @@ function [x,t,u] = conv_diff(a,b,n,T,m,c,v,d,f)
 %                  [ 0  0  0 ... s2 s1]
 %
 %             [s0]   [ 0  1  0][ d*k + 1 ]
-%       where [s1] = [-1  0  1][0.5*v*k/h]
+%       where [s1] = [ 0 -1  1][  v*k/h  ]
 %             [s2]   [ 1 -2  1][c^2*k/h^2]
 % INPUTS
 %   a -  lower limit for interval in x
@@ -69,9 +71,9 @@ u([1 end], :) = 0;
 %% Construct stencil for each time slot.
 % The zero boundary conditions mean rows and columns for u_0 and u_n can be
 % removed giving an order n-1 stencil.
-s = [d*k+1 0.5*v*k/h c^2*k/h^2]*[ 0  1  0
-                                 -1  0  1    % DC
-                                  1 -2  1 ]; % D2C
+s = [d*k+1 v*k/h c^2*k/h^2]*[ 0  1  0
+                              0 -1  1    % DC
+                              1 -2  1 ]; % D2C
 S = spdiags(repmat(s, n-1, 1), -1:1, n-1, n-1);
 
 %% Apply stencil at each time 

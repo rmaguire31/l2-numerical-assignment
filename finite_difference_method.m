@@ -33,8 +33,17 @@ for i = 1:size(mn)
     
     h = (b-a)/n;
     k = T/m;
-    G = max([abs(1 + d*k - 2*c^2*k/h^2 + abs(v*k/h + 1i*2*c^2*k/h^2))
-             abs(1 + d*k - 2*c^2*k/h^2 - abs(v*k/h + 1i*2*c^2*k/h^2))]);
+    
+    R = d*k;
+    C = v*k/h;
+    S = c^2*k/h^2;
+    
+    Gsp = abs(1 + R + (2*S+C)*([-1 1] - 1));
+    c3 = ((2*S+C)*(1 + R - (2*S+C)))/(C^2 - (2*S+C)^2);
+    if (abs(c3) <= 1)
+        Gsp(end+1) = abs(1 + R + (2*S+C)*(c3 - 1) + 1i*C*sqrt(1-c3^2));
+    end
+    G = max(Gsp);
     
     table3(i,4) = {sprintf('%.3g', G)};
 end
