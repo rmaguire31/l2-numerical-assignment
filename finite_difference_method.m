@@ -45,6 +45,11 @@ for i = 1:size(mn)
     end
     G = max(Gsp);
     
+    if G > 1
+        plot_amplification_factor([R C S], 'F');
+        keyboard
+    end
+    
     table3(i,4) = {sprintf('%.3g', G)};
 end
 table3 = array2table(table3);
